@@ -12,8 +12,16 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="http://39.105.124.108:8080/stomp"
+        android:text="ws://39.105.124.108:8080/stomp"
         android:hint="链接地址"/>
+
+    <EditText
+        android:id="@+id/et_reg"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="/topic/broadcast"
+        android:hint="广播订阅地址"/>
 
     <EditText
         android:id="@+id/et_text"
@@ -55,6 +63,7 @@
     <TextView
         android:id="@+id/tv_msg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
 
 </LinearLayout>

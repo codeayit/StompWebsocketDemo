@@ -3,12 +3,17 @@ package com.ayit.stompwebsocketdemo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.robot.baseapi.base.BaseApplication;
+import com.robot.baseapi.util.SPManager;
 
 import org.java_websocket.WebSocket;
 
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView serverMessage;
     private EditText etUrl;
+    private EditText etReg;
     private Button start;
     private Button stop;
     private Button send;
@@ -38,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindView();
+        String urlStr = SPManager.get("et_url");
+        if (!TextUtils.isEmpty(urlStr)){
+            etUrl.setText(urlStr);
+        }
+        String regStr = SPManager.get("et_reg");
+        if (!TextUtils.isEmpty(regStr)){
+            etReg.setText(regStr);
+        }
+
+
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStompClient.send("/app/welcome","{\"name\":\""+editText.getText()+"\"}")
+                mStompClient.send("/app/broadcast","{\"name\":\""+editText.getText()+"\"}")
                         .subscribe(new Subscriber<Void>() {
                             @Override
                             public void onCompleted() {
@@ -82,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
         cheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,CheatActivity.class));
-                if(mStompClient != null) {
-                    mStompClient.disconnect();
-                }
-                finish();
+//                startActivity(new Intent(MainActivity.this,CheatActivity.class));
+//                if(mStompClient != null) {
+//                    mStompClient.disconnect();
+//                }
+//                finish();
             }
         });
     }
@@ -103,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     //创建client 实例
     private void createStompClient() {
 
-        String url = etUrl.getText().toString();
+        final String url = etUrl.getText().toString();
         mStompClient = Stomp.over(WebSocket.class, url);
         mStompClient.connect();
         toast("开始链接："+url);
@@ -114,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     case OPENED:
                         Log.d(TAG, "Stomp connection opened");
                         toast("连接已开启");
+                        SPManager.put("et_url",url);
                         break;
 
                     case ERROR:
@@ -131,7 +148,12 @@ public class MainActivity extends AppCompatActivity {
 
     //订阅消息
     private void registerStompTopic() {
-        mStompClient.topic("/topic/getResponse").subscribe(new Action1<StompMessage>() {
+
+        final String regStr = etReg.getText().toString();
+        if (TextUtils.isEmpty(regStr)){
+            SPManager.put("et_reg",regStr);
+        }
+        mStompClient.topic(regStr).subscribe(new Action1<StompMessage>() {
             @Override
             public void call(StompMessage stompMessage) {
                 Log.e(TAG, "call: " +stompMessage.getPayload() );
@@ -160,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         send = (Button) findViewById(R.id.btn_send);
         editText = (EditText) findViewById(R.id.et_text);
         etUrl = (EditText) findViewById(R.id.et_url);
+        etReg = findViewById(R.id.et_reg);
         cheat = (Button) findViewById(R.id.btn_cheat);
     }
 }

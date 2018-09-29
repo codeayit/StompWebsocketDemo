@@ -31,4 +31,6 @@ dependencies {
     //StompProtocolAndroid 依赖于webSocket的标准实现
     implementation 'org.java-websocket:Java-WebSocket:1.3.0'
 
+    implementation 'com.github.1053452188:BaseAppApi:96770de051'
+
 }
