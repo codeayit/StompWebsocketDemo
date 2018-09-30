@@ -1,9 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".CheatActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/et_url"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ws://39.105.124.108:8080/stomp"
+        android:hint="链接地址"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_reg"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="/user/queue/pointShouts"
+            android:hint="广播订阅地址"/>
+
+        <EditText
+            android:id="@+id/et_send"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="/app/singleShout"
+            android:hint="消息发送地址"/>
+    </LinearLayout>
+
+
+
+    <EditText
+        android:id="@+id/et_text"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="发送消息"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="开始"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="停止"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="发送"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_cheat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="聊天"/>
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
+</LinearLayout>

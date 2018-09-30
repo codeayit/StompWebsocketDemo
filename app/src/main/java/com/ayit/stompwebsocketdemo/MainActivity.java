@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView serverMessage;
     private EditText etUrl;
     private EditText etReg;
+    private EditText etSend;
     private Button start;
     private Button stop;
     private Button send;
@@ -52,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(regStr)){
             etReg.setText(regStr);
         }
+        String sendStr = SPManager.get("et_send");
+        if (!TextUtils.isEmpty(sendStr)){
+            etSend.setText(sendStr);
+        }
 
 
         start.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +72,12 @@ public class MainActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStompClient.send("/app/broadcast","{\"name\":\""+editText.getText()+"\"}")
+
+                String sendStr = etSend.getText().toString();
+                if (!TextUtils.isEmpty(sendStr)){
+                    SPManager.put("et_send",sendStr);
+                }
+                mStompClient.send(sendStr,editText.getText().toString())
                         .subscribe(new Subscriber<Void>() {
                             @Override
                             public void onCompleted() {
@@ -98,11 +108,11 @@ public class MainActivity extends AppCompatActivity {
         cheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(MainActivity.this,CheatActivity.class));
-//                if(mStompClient != null) {
-//                    mStompClient.disconnect();
-//                }
-//                finish();
+                startActivity(new Intent(MainActivity.this,CheatActivity.class));
+                if(mStompClient != null) {
+                    mStompClient.disconnect();
+                }
+                finish();
             }
         });
     }
@@ -183,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.et_text);
         etUrl = (EditText) findViewById(R.id.et_url);
         etReg = findViewById(R.id.et_reg);
+        etSend = findViewById(R.id.et_send);
         cheat = (Button) findViewById(R.id.btn_cheat);
     }
 }

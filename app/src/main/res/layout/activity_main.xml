@@ -14,14 +14,31 @@
         android:layout_height="wrap_content"
         android:text="ws://39.105.124.108:8080/stomp"
         android:hint="链接地址"/>
-
-    <EditText
-        android:id="@+id/et_reg"
-        android:gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="/topic/broadcast"
-        android:hint="广播订阅地址"/>
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_reg"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="/topic/broadcast"
+            android:hint="广播订阅地址"/>
+
+        <EditText
+            android:id="@+id/et_send"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="/app/broadcast"
+            android:hint="消息发送地址"/>
+    </LinearLayout>
+
+
 
     <EditText
         android:id="@+id/et_text"
