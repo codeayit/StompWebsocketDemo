@@ -12,15 +12,24 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ayit.klog.KLog;
 import com.robot.baseapi.base.BaseApplication;
 import com.robot.baseapi.util.SPManager;
 
 import org.java_websocket.WebSocket;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import rx.Subscriber;
 import rx.functions.Action1;
 import ua.naiksoftware.stomp.LifecycleEvent;
 import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompMessage;
 
@@ -45,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindView();
+        KLog.init(this,true,"klog");
         String urlStr = SPManager.get("et_url");
         if (!TextUtils.isEmpty(urlStr)){
             etUrl.setText(urlStr);
@@ -57,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(sendStr)){
             etSend.setText(sendStr);
         }
+
+        JSONObject jo = new JSONObject();
+
+        jo.put("deviceId","1");
+        jo.put("sn","lnyserialno");
+        jo.put("acccountId","255");
+        jo.put("msgId","1");
+        jo.put("data","123");
+        editText.setText(jo.toJSONString());
 
 
         start.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +96,15 @@ public class MainActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(sendStr)){
                     SPManager.put("et_send",sendStr);
                 }
+
+//                {
+//                    "deviceId":1,
+//                        "sn":"lnyserialno",
+//                        "acccountId":255,
+//                        "msgId":"1",
+//                        "data":"123"
+//                }
+                KLog.d("发送消息："+sendStr);
                 mStompClient.send(sendStr,editText.getText().toString())
                         .subscribe(new Subscriber<Void>() {
                             @Override
@@ -130,8 +158,20 @@ public class MainActivity extends AppCompatActivity {
     private void createStompClient() {
 
         final String url = etUrl.getText().toString();
-        mStompClient = Stomp.over(WebSocket.class, url);
-        mStompClient.connect();
+
+
+
+        List<StompHeader> headerList = new ArrayList<>();
+        headerList.add(new StompHeader("username","lnyserialno"));
+        headerList.add(new StompHeader("password","@2scindapsu"));
+
+        Map<String,String> headers = new HashMap<>();
+
+        headers.put("username","lnyserialno");
+        headers.put("password","@2scindapsu");
+
+        mStompClient = Stomp.over(WebSocket.class, url,headers);
+        mStompClient.connect(headerList);
         toast("开始链接："+url);
         mStompClient.lifecycle().subscribe(new Action1<LifecycleEvent>() {
             @Override
@@ -163,10 +203,11 @@ public class MainActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(regStr)){
             SPManager.put("et_reg",regStr);
         }
+        KLog.d("订阅地址："+regStr);
         mStompClient.topic(regStr).subscribe(new Action1<StompMessage>() {
             @Override
             public void call(StompMessage stompMessage) {
-                Log.e(TAG, "call: " +stompMessage.getPayload() );
+                KLog.d("call: " +stompMessage.getPayload() );
                 showMessage(stompMessage);
             }
         });
@@ -174,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toast(final String message) {
-        Log.d(TAG,message);
+        KLog.d(message);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
